@@ -68,19 +68,32 @@ namespace Sox2
                 // If continuous, need to continue until ended.
                 // If Not continuous, need to run once
 
+                bool _firstIteration = true;
+
                 do
                 {
-                    // kkf, may have to change these settings
-                    Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
                     try
                     {
                         try
                         {
-                            IPAddress addressList = Dns.GetHostByName(args[0]).AddressList[0];
+                            // We want to get all IP addresses for URL
+                            //var _addressList = Dns.GetHostByName(args[0]).AddressList;
+                            // We want this to do a DNS lookup everytime in case the IP's change
+                            var _addressList = Dns.GetHostAddresses(args[0]);
 
-                            IPEndPoint pEndPoint = new IPEndPoint(addressList, Convert.ToInt32(args[1]));
-                            SoxCon(pEndPoint, socket).Wait();
+                            // If more than one IP was found, let user know this
+                            if(_addressList.Length > 1 && _firstIteration )
+                            {
+                                Console.WriteLine($"Multiple IP's found for {args[0]}:");
+                                _addressList.ToList().ForEach(i => Console.WriteLine(i.ToString()));
+                                Console.WriteLine($"\n______________________________________________________________ \r\n");
+                                _firstIteration = false;
+                                
+                            }
+
+                            SoxCons(_addressList, Convert.ToInt32(args[1])).Wait();
+
                         }
                         catch (ArgumentNullException argumentNullException)
                         {
@@ -97,7 +110,7 @@ namespace Sox2
                     }
                     finally
                     {
-                        socket.Close();
+                        
                     }
 
                 } while (!Console.KeyAvailable &&  _continuousTCP);
@@ -113,6 +126,8 @@ namespace Sox2
             Console.WriteLine("Press space bar to end.");
             Console.ReadKey();
         }
+
+
 
         private static void TestAzureServices(string arg1, string arg2)
         {
@@ -139,15 +154,17 @@ namespace Sox2
                 {
                     int _port = 3443;
 
-                    IPAddress addressList = Dns.GetHostEntry(arg2).AddressList[0];
+                    // Here we need to do like we're doing in TLSHello, check if an IP address is used,
+                    // if a url, then get all the associated IP's test them all
+                    IPAddress _ipAddress = Dns.GetHostEntry(arg2).AddressList[0];
                     // First test Portal & Power Shell
-                    IPEndPoint pEndPoint = new IPEndPoint(addressList,  _port);
+                   // IPEndPoint pEndPoint = new IPEndPoint(addressList,  _port);
 
                     try
                     {
                      //   System.Diagnostics.Debugger.Launch();
 
-                        await SoxCon(pEndPoint, _socket);
+                        await SoxCon(_ipAddress, _port);
                        // Console.WriteLine(string.Format("Connection to Port {0}  passed. ", _port));
                     }
                     catch (SocketException socketException)
@@ -159,8 +176,8 @@ namespace Sox2
                     {
                         _port = 80;
                         //IPEndPoint pEndPoint2 = new IPEndPoint(addressList, _port);
-                        pEndPoint = new IPEndPoint(addressList, _port);
-                        await SoxCon (pEndPoint, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp));
+                        await SoxCon(_ipAddress, _port);
+
                     }
                     catch (SocketException socketException)
                     {
@@ -170,8 +187,8 @@ namespace Sox2
                     try
                     {
                         _port = 443;
-                        pEndPoint = new IPEndPoint(addressList, _port);
-                        await SoxCon (pEndPoint, new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp));
+                        //pEndPoint = new IPEndPoint(_ipAddress, _port);
+                        await SoxCon(_ipAddress, _port);
                     }
                     catch (SocketException socketException)
                     {
@@ -191,24 +208,115 @@ namespace Sox2
             finally
             {
                 _socket.Close();
+
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine("\n");
             }
         }
 
         private static void DispHelp()
         {
-            Console.WriteLine("Test Azure Services: -<Command> <FQDN or IPAddress");
+            Console.WriteLine("Test Azure Apim ports: -<Command> <FQDN or IPAddress>");
+            Console.WriteLine("Syntax: sox2 -apim yourapim.azure-api.net");
 
-            Console.WriteLine("\n-apim This will test ports needed for APIM to work.  \r\nhttps://docs.microsoft.com/en-us/azure/api-management/api-management-using-with-vnet#-common-network-configuration-issues");
+            Console.WriteLine("\n-apim This will test ports needed for APIM to work 80, 443, 3443.  \r\nhttps://docs.microsoft.com/en-us/azure/api-management/api-management-using-with-vnet#-common-network-configuration-issues");
 
             Console.WriteLine("\r\n\n--- Test IP/FQDN & port with logging");
-            Console.WriteLine("\nSyntax: sox 192.168.0.1 80 -y or sox server.acme.com 80 -n \r\n\nFirst parameter:\tSpecify IP address or host name to connect to. \n\nSecond parameter:\tPort to connect to.  I.e. 80 for http.\n\nThird parameter:\tEnable event logging. -Y or -N\n\t\t\tIf enabled an warning message will be logged to the\n\t\t\tApplication Log.  Event ID 65535\n"); 
+            Console.WriteLine("\nSyntax: sox2 192.168.0.1 80 -y or sox server.acme.com 80 -n \r\n\nFirst parameter:\tSpecify IP address or host name to connect to. \n\nSecond parameter:\tPort to connect to.  I.e. 80 for http.\n\nThird parameter:\tEnable event logging. -Y or -N\n\t\t\tIf enabled an warning message will be logged to the\n\t\t\tApplication Log.  Event ID 65535\n"); 
 
             Console.WriteLine("\r\n\n--- Continuous Test IP/FQDN & port");
-            Console.WriteLine("\nSyntax: sox 192.168.0.1 80 -y -c or sox server.acme.com 80 -n -c \r\n\nFirst parameter:\tSpecify IP address or host name to connect to. \n\nSecond parameter:\tPort to connect to.  I.e. 80 for http.\n\nThird parameter:\tEnable event logging. -Y or -N\n\t\t\tIf enabled an warning message will be logged to the\n\t\t\tApplication Log.  Event ID 65535\n\nFourth Parameter: \tContinuous Ping -c ");
+            Console.WriteLine("\nSyntax: sox2 192.168.0.1 80 -y -c or sox server.acme.com 80 -n -c \r\n\nFirst parameter:\tSpecify IP address or host name to connect to. \n\nSecond parameter:\tPort to connect to.  I.e. 80 for http.\n\nThird parameter:\tEnable event logging. -Y or -N\n\t\t\tIf enabled an warning message will be logged to the\n\t\t\tApplication Log.  Event ID 65535\n\nFourth Parameter: \tContinuous Ping -c ");
             
    //         Console.WriteLine("\r\n\nUse App.config to enable notifications");
         }
 
+        /// <summary>
+        /// Call when you want to text a collection of IPAddresses
+        /// </summary>
+        /// <param name="addressList"></param>
+        /// <param name="portNum"></param>
+        /// <returns></returns>
+        private async static Task SoxCons(IPAddress[] addressList, int portNum)
+        {
+            foreach(var address in addressList)
+            {
+                // kkf, may have to change these settings            
+                await SoxCon(address, portNum);
+            }
+
+        }
+
+        // Call to test a single IP
+        private async static Task SoxCon(IPAddress ipAddress, int portNum)
+        {
+            Socket _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            try
+            {                
+                IPEndPoint pEndPoint = new IPEndPoint(ipAddress, Convert.ToInt32(portNum));
+
+                try
+                {
+                    //   sock.Connect(EPhost);
+
+                    Stopwatch _sw = new Stopwatch();
+
+                    bool _connSuccess = false;
+
+                    //https://stackoverflow.com/questions/1062035/how-to-configure-socket-connect-timeout
+
+                    _sw.Start();
+                    // Console.WriteLine($"TCP connect to {EPhost} ");
+
+                    IAsyncResult _result = _socket.BeginConnect(pEndPoint, null, null);
+                    _connSuccess = _result.AsyncWaitHandle.WaitOne(5000, true);
+
+                    _sw.Stop();
+
+                    if (_socket.Connected)
+                    {
+                        Console.WriteLine($"TCP Connect to {pEndPoint} - From {_socket.LocalEndPoint}: Success - {_sw.ElapsedMilliseconds} ms - {DateTime.Now}");
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write($"From {_socket.LocalEndPoint}: Timed out after - {_sw.ElapsedMilliseconds} ms");
+                        // This would show the socket error for connection time out
+                        throw new SocketException(10060);
+                    }
+
+                }
+                catch (ArgumentNullException argumentNullException)
+                {
+                    Console.WriteLine(string.Concat("\r\nArgumentNullException : ", argumentNullException.GetBaseException().Message));
+                }
+                catch (SocketException socketException1)
+                {
+                    SocketException socketException = socketException1;
+                    object[] ePhost = new object[] { "\r\nSocketException occurred in connection to ", pEndPoint, ".  \r\nError: ", socketException.GetBaseException().Message };
+                    Console.WriteLine(string.Concat(ePhost));
+
+                    if (_eventlog)
+                    {
+
+                        await LogEvent(EVENTSOURCE, $"SocketException occurred in connection to {pEndPoint} Error: {socketException.GetBaseException().Message} ");
+
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(string.Concat("\r\nUnexpected exception : ", exception.GetBaseException()));
+                }
+            }
+            finally
+            {
+                _socket.Close();
+            }
+        }
+
+        #region Original SoxCon
+
+        /*
         private async static Task SoxCon(IPEndPoint EPhost, Socket sock)
         {
             try
@@ -242,23 +350,15 @@ namespace Sox2
                         throw new SocketException(10060);
                     }
                    
-
-                    /*
-                     * TCP connect to 13.77.161.179:443:
-Infinite iterations (warmup 1) ping test:
-Connecting to 13.77.161.179:443 (warmup): from 192.168.2.201:57342: 86.43ms
-Connecting to 13.77.161.179:443: from 192.168.2.201:57343: 82.15ms
-Connecting to 13.77.161.179:443: from 192.168.2.201:57344: 87.61ms
-                    */
                 }
                 catch (ArgumentNullException argumentNullException)
                 {
-                    Console.WriteLine(string.Concat("ArgumentNullException : ", argumentNullException.GetBaseException().Message));
+                    Console.WriteLine(string.Concat("\r\nArgumentNullException : ", argumentNullException.GetBaseException().Message));
                 }
                 catch (SocketException socketException1)
                 {
                     SocketException socketException = socketException1;
-                    object[] ePhost = new object[] { "SocketException occurred in connection to ", EPhost, ".  Error: ", socketException.GetBaseException().Message };
+                    object[] ePhost = new object[] { "\r\nSocketException occurred in connection to ", EPhost, ".  \r\nError: ", socketException.GetBaseException().Message };
                     Console.WriteLine(string.Concat(ePhost));
 
                     if (_eventlog)
@@ -270,7 +370,7 @@ Connecting to 13.77.161.179:443: from 192.168.2.201:57344: 87.61ms
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine(string.Concat("Unexpected exception : ", exception.GetBaseException()));
+                    Console.WriteLine(string.Concat("\r\nUnexpected exception : ", exception.GetBaseException()));
                 }
             }
             finally
@@ -278,7 +378,8 @@ Connecting to 13.77.161.179:443: from 192.168.2.201:57344: 87.61ms
                 sock.Close();                
             }
         }
-
+    */
+        #endregion
         private async static Task LogEvent(string source, string message)
         {
             if (_eventlog)
