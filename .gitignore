@@ -353,7 +353,7 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
-
 *.cache
-
 *.pcapng
+!Sox2.zip
+!TLSHello.zip
