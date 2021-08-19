@@ -24,7 +24,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-namespace TLSHello
+namespace TLSHelloCore
 {
     class Program
     {

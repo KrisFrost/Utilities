@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31410.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TLSHello", "TLSHello.csproj", "{C91E2505-6D4E-4CB5-AFE6-393BD3740BB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TLSHelloCore", "TLSHelloCore.csproj", "{F4F6C953-457D-42C2-8692-A7321AE98343}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C91E2505-6D4E-4CB5-AFE6-393BD3740BB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C91E2505-6D4E-4CB5-AFE6-393BD3740BB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C91E2505-6D4E-4CB5-AFE6-393BD3740BB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C91E2505-6D4E-4CB5-AFE6-393BD3740BB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4F6C953-457D-42C2-8692-A7321AE98343}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4F6C953-457D-42C2-8692-A7321AE98343}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4F6C953-457D-42C2-8692-A7321AE98343}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4F6C953-457D-42C2-8692-A7321AE98343}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
