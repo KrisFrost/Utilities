@@ -254,11 +254,13 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                 var sslStream = (SslStream)sender;
 
                 // Check sslStream.SslProtocol here 
+                Console.ForegroundColor = ConsoleColor.Cyan;                
                 Console.WriteLine($"\r\nProtocol/Cipher Info:");
-                
+                Console.ForegroundColor = ConsoleColor.Gray;
+
                 string _tlsVer = sslStream.SslProtocol.ToString().ToLower();
 
-                Console.WriteLine($"Protocol:  {sslStream.SslProtocol}");
+                Console.WriteLine($"\r\nProtocol:  {sslStream.SslProtocol}");
 
                 if(_tlsVer != "tls12")
                 {
@@ -279,7 +281,9 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                 Console.WriteLine("\r\n____________________________________________________");
             }
 
+            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("\r\nValidating Certificate...");
+            Console.ForegroundColor = ConsoleColor.Gray;
 
             if (sslPolicyErrors == SslPolicyErrors.None)
             {
@@ -294,12 +298,15 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                 Console.WriteLine($"Sig. Alg:  {_cert2.SignatureAlgorithm.FriendlyName}");
                 Console.WriteLine($"ThumbPrint:  {_cert2.Thumbprint}");
                 Console.WriteLine($"Version:  {_cert2.Version}");
-                
+
                 //  Console.WriteLine($"SANS:  {_cert2.GetNameInfo(X509NameType.UpnName, false)}");
                 //  Console.WriteLine($"Cert Alg. Value:  {sslStream.RemoteCertificate.}");
                 //Console.WriteLine($"Cert Public Key:  {certificate.GetPublicKeyString()}");
 
-                 Console.WriteLine("\r\nNo SSL Policy Errors.");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\r\nNo SSL Policy Errors.");
+                Console.ForegroundColor = ConsoleColor.Gray;
+
                 Console.WriteLine("\r\n____________________________________________________\r\n");
 
                 // Check for AIA and if any urls, try to make the connection.  Should this be a tcp ping or get the file?
@@ -308,7 +315,9 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                 // OID Value 1.3.6.1.5.5.7.1.1 AIA
                 // OID CRL Dist 2.5.29.31 AIA
                 // OID SAN "2.5.29.17"
+                Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("Checking for AIA Extensions ....");
+                Console.ForegroundColor = ConsoleColor.Gray;
 
                 var _aiaExt = _cert2.Extensions.OfType<X509Extension>().FirstOrDefault(f => f.Oid.Value == OID_AIA_VALUE);
 
@@ -352,7 +361,9 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
 
                             if (!string.IsNullOrEmpty(_element))
                             {
+                                Console.ForegroundColor = ConsoleColor.Cyan;
                                 Console.WriteLine($"\r\nAIA {i}:");
+                                Console.ForegroundColor = ConsoleColor.Gray;
                                 Console.WriteLine(_element);
 
                                 // Here we need to get the URL, test the URI validity
@@ -380,6 +391,10 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                                         {
                                             Uri _uri = new Uri(url);
                                             HelperLib.TcpPingHost(_uri.Host, _uri.Port);
+
+                                            Console.WriteLine("\r\nTesting http connectivity.");
+                                            // Test Http Connectivity as well
+                                            HelperLib.HttpPing(_uri.AbsoluteUri).Wait();
                                         }
                                         catch (Exception ex)
                                         {
@@ -491,6 +506,9 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                                         {
                                             Uri _uri = new Uri(url);
                                             HelperLib.TcpPingHost(_uri.Host, _uri.Port);
+                                            Console.WriteLine("\r\nTesting http connectivity.");
+                                            // Test Http Connectivity as well
+                                            HelperLib.HttpPing(_uri.AbsoluteUri).Wait();
                                         }
                                         catch (Exception ex)
                                         {

@@ -121,7 +121,8 @@ namespace Sox2
             { 
                 DispHelp();
             }
-            
+
+            Console.ForegroundColor = ConsoleColor.Gray;
 
             Console.WriteLine("Press space bar to end.");
             Console.ReadKey();
