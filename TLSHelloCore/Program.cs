@@ -66,7 +66,7 @@ namespace TLSHelloCore
                                 // IPAddress addressList = Dns.GetHostEntry(_hostPort[0]).AddressList[0];
 
                                 // GetServerSecurityInfo(addressList.ToString(), Convert.ToInt32(_hostPort[1])).Wait();
-                                GetServerSecurityInfo(_hostPort[0], Convert.ToInt32(_hostPort[1])).Wait();
+                                GetServerSecurityInfo(_hostPort[0], Convert.ToInt32(_hostPort[1]));
 
                                 //IPEndPoint pEndPoint = new IPEndPoint(addressList, Convert.ToInt32(args[1]));
                                 i = _argLength;
@@ -94,7 +94,7 @@ namespace TLSHelloCore
             Console.ReadKey();
         }
 
-        private async static Task GetServerSecurityInfo(string remoteHost, int portNum)
+        private static void GetServerSecurityInfo(string remoteHost, int portNum)
         {
             if (enableTracing)
             {
