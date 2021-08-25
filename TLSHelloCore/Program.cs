@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Diagnostics.Tracing;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ using System.Security.Cryptography.X509Certificates;
 //using System.Security.Cryptography.X509Certificates.Asn1;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using System.Formats.Asn1;
+//using System.Formats.Asn1;
 using System.Buffers;
 using System.Collections.Concurrent;
 
@@ -39,39 +40,51 @@ namespace TLSHelloCore
         const string OID_AIA_VALUE = "1.3.6.1.5.5.7.1.1";
         const string OID_CRLDP_VALUE = "2.5.29.31";
         const string OID_SAN_VALUE = "2.5.29.17";
+        static bool enableTracing = false;
+        static PipeEventListener? listener;
+
+        static PipeEventListener SetupTracing()
+        {
+            return new PipeEventListener();
+        }
 
         static void Main(string[] args)
         {
             int _argLength = args.Length;
 
-            if (_argLength == 2)
+            if (_argLength >= 2)
             {
-                try
+                for (int i = 0; i < _argLength; i++)
                 {
-                    switch (args[0][1].ToString().ToLower())
+                    try
                     {
-                        case "i":
-                            var _hostPort = args[1].ToString().Split(":");
+                        switch (args[i][1].ToString().ToLower())
+                        {
+                            case "i":
+                                var _hostPort = args[i + 1].ToString().Split(":");
 
-                            // IPAddress addressList = Dns.GetHostEntry(_hostPort[0]).AddressList[0];
+                                // IPAddress addressList = Dns.GetHostEntry(_hostPort[0]).AddressList[0];
 
-                            // GetServerSecurityInfo(addressList.ToString(), Convert.ToInt32(_hostPort[1])).Wait();
-                            GetServerSecurityInfo(_hostPort[0], Convert.ToInt32(_hostPort[1])).Wait();
+                                // GetServerSecurityInfo(addressList.ToString(), Convert.ToInt32(_hostPort[1])).Wait();
+                                GetServerSecurityInfo(_hostPort[0], Convert.ToInt32(_hostPort[1]));
 
-                            //IPEndPoint pEndPoint = new IPEndPoint(addressList, Convert.ToInt32(args[1]));
-                            break;
-
-                        default:
-                            throw new InvalidDataException();
-                            break;
+                                //IPEndPoint pEndPoint = new IPEndPoint(addressList, Convert.ToInt32(args[1]));
+                                i = _argLength;
+                                break;
+                            case "d":
+                                enableTracing = true;
+                                continue;
+                            default:
+                                throw new InvalidDataException();
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Invalid Syntax.  Please try again.");
+                        DispHelp();
                     }
                 }
-                catch(Exception ex)
-                {
-                    Console.WriteLine("Invalid Syntax.  Please try again.");
-                    DispHelp();
-                }               
-
             }
             else
             {
@@ -81,8 +94,14 @@ namespace TLSHelloCore
             Console.ReadKey();
         }
 
-        private async static Task GetServerSecurityInfo(string remoteHost, int portNum)
+        private static void GetServerSecurityInfo(string remoteHost, int portNum)
         {
+            if (enableTracing)
+            {
+                listener = SetupTracing();
+                Console.WriteLine("Listener created!!");
+            }
+
             try
             {
                 // take in args url/ip & port
@@ -269,8 +288,6 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                     Console.WriteLine("Waring: TLS versions should be 1.2 for APIM and no lower for security");
                     Console.ForegroundColor = ConsoleColor.Gray;
                 }
-
-               
 
                 Console.WriteLine($"Negotiated Cipher: {sslStream.NegotiatedCipherSuite}");
                 Console.WriteLine($"Cipher Algorithm: {sslStream.CipherAlgorithm}");
@@ -679,6 +696,67 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
             //Console.WriteLine("\nSyntax: sox 192.168.0.1 80 -y -c or sox server.acme.com 80 -n -c \r\n\nFirst parameter:\tSpecify IP address or host name to connect to. \n\nSecond parameter:\tPort to connect to.  I.e. 80 for http.\n\nThird parameter:\tEnable event logging. -Y or -N\n\t\t\tIf enabled an warning message will be logged to the\n\t\t\tApplication Log.  Event ID 65535\n\nFourth Parameter: \tContinuous Ping -c ");
 
             //         Console.WriteLine("\r\n\nUse App.config to enable notifications");
+        }
+    }
+
+    internal sealed class PipeEventListener : EventListener
+    {
+        public const EventKeywords TasksFlowActivityIds = (EventKeywords)0x80;
+        public const EventKeywords Debug = (EventKeywords)0x20000;
+
+        protected override void OnEventSourceCreated(EventSource eventSource)
+        {
+            Console.WriteLine("OnEventSourceCreated {0}", eventSource.Name);
+
+            if (eventSource.Name.Contains("System.Net.Http") ||
+                eventSource.Name.Contains("System.Net.Sockets") ||
+                eventSource.Name.Contains("System.Net.Security") ||
+                eventSource.Name.Contains("System.Net.NameResolution"))
+            {
+                EnableEvents(eventSource, EventLevel.LogAlways, EventKeywords.All);
+            }
+            else if (eventSource.Name == "System.Threading.Tasks.TplEventSource")
+            {
+                // Attach ActivityId to the events.
+                EnableEvents(eventSource, EventLevel.LogAlways, TasksFlowActivityIds);
+            }
+        }
+
+        protected override void OnEventWritten(EventWrittenEventArgs eventData)
+        {
+            // It's a counter, parse the data properly.
+            if (eventData.EventId == -1)
+            {
+                var sb = new StringBuilder().Append($"{eventData.TimeStamp:HH:mm:ss.fffffff}  {eventData.EventSource.Name}  ");
+                var counterPayload = (IDictionary<string, object>)(eventData.Payload[0]);
+                bool appendSeparator = false;
+                foreach (var counterData in counterPayload)
+                {
+                    if (appendSeparator)
+                    {
+                        sb.Append(", ");
+                    }
+                    sb.Append(counterData.Key).Append(": ").Append(counterData.Value);
+                    appendSeparator = true;
+                }
+                Console.WriteLine(sb.ToString());
+            }
+            else
+            {
+                //var sb = new StringBuilder().Append($"{eventData.TimeStamp:HH:mm:ss.fffffff}  {eventData.ActivityId}.{eventData.RelatedActivityId}  {eventData.EventSource.Name}.{eventData.EventName}(");
+                var sb = new StringBuilder().Append($"{eventData.ActivityId}.{eventData.RelatedActivityId}  {eventData.EventSource.Name}.{eventData.EventName}(");
+                for (int i = 0; i < eventData.Payload?.Count; i++)
+                {
+                    sb.Append(eventData.PayloadNames?[i]).Append(": ").Append(eventData.Payload[i]);
+                    if (i < eventData.Payload?.Count - 1)
+                    {
+                        sb.Append(", ");
+                    }
+                }
+
+                sb.Append(")");
+                Console.WriteLine(sb.ToString());
+            }
         }
     }
 }
