@@ -327,6 +327,7 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
 
             if (sslPolicyErrors == SslPolicyErrors.None)
             {
+
                 //  Console.WriteLine($"Cert Name:  {sslStream.RemoteCertificate.GetName()}");
                 Console.WriteLine($"\r\nCert Subject:  {cert2.Subject}");
                 Console.WriteLine($"Cert Issuer:  {cert2.Issuer}");
