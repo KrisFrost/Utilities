@@ -52,28 +52,36 @@ namespace TLSHelloCore
         {
             int _argLength = args.Length;
 
-            if (_argLength >= 2)
+            if (_argLength == 2)
             {
-                for (int i = 0; i < _argLength; i++)
-                {
+                //for (int i = 0; i < _argLength; i++)
+                //{
                     try
                     {
-                        switch (args[i][1].ToString().ToLower())
+                        string _cmd1 = args[0][1].ToString().ToLower();
+
+                        switch (_cmd1)
                         {
                             case "i":
-                                var _hostPort = args[i + 1].ToString().Split(":");
+                            case "d":
+
+                                if (_cmd1 == "d")
+                                {
+                                    enableTracing = true;
+                                }
+
+                                var _hostPort = args[1].ToString().Split(":");
 
                                 // IPAddress addressList = Dns.GetHostEntry(_hostPort[0]).AddressList[0];
 
                                 // GetServerSecurityInfo(addressList.ToString(), Convert.ToInt32(_hostPort[1])).Wait();
                                 GetServerSecurityInfo(_hostPort[0], Convert.ToInt32(_hostPort[1]));
 
-                                //IPEndPoint pEndPoint = new IPEndPoint(addressList, Convert.ToInt32(args[1]));
-                                i = _argLength;
+                                //IPEndPoint pEndPoint = new IPEndPoint(addressList, Convert.ToInt32(args[1]));                                
                                 break;
-                            case "d":
-                                enableTracing = true;
-                                continue;
+                            //case "d":
+                            //    enableTracing = true;
+                            //    continue;
                             default:
                                 throw new InvalidDataException();
                                 break;
@@ -84,7 +92,7 @@ namespace TLSHelloCore
                         Console.WriteLine("Invalid Syntax.  Please try again.");
                         DispHelp();
                     }
-                }
+                //}
             }
             else
             {
@@ -687,7 +695,8 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
         {
             Console.WriteLine("TLSHello makes a https connection and gives server info about that connection.");
 
-            Console.WriteLine("\nOptions: -i for remote conn. Syntax: tlshello.exe -i microsoft.com:443");
+            Console.WriteLine("\nOptions: -i for information output to console. Syntax: tlshello.exe -i microsoft.com:443");
+            Console.WriteLine("\nOptions: -d to enable Debug Tracing. Syntax: tlshello.exe -d microsoft.com:443");
 
             //Console.WriteLine("\r\n\n--- Test IP/FQDN & port with logging");
             //Console.WriteLine("\nSyntax: sox 192.168.0.1 80 -y or sox server.acme.com 80 -n \r\n\nFirst parameter:\tSpecify IP address or host name to connect to. \n\nSecond parameter:\tPort to connect to.  I.e. 80 for http.\n\nThird parameter:\tEnable event logging. -Y or -N\n\t\t\tIf enabled an warning message will be logged to the\n\t\t\tApplication Log.  Event ID 65535\n");
