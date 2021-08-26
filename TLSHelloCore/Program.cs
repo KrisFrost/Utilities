@@ -40,6 +40,7 @@ namespace TLSHelloCore
         const string OID_AIA_VALUE = "1.3.6.1.5.5.7.1.1";
         const string OID_CRLDP_VALUE = "2.5.29.31";
         const string OID_SAN_VALUE = "2.5.29.17";
+        const string NETTRACELOGNAME = "NetTrace.log";
         static bool enableTracing = false;
         static bool useColors = OperatingSystem.IsWindows();
         static PipeEventListener? listener;
@@ -52,62 +53,91 @@ namespace TLSHelloCore
 
         static void Main(string[] args)
         {
-            int port = 443;
-            string host = string.Empty;
+            //try
+            //{
+            //    //for (int i = 0; i < _argLength; i++)
+            //    //{
+            //        string arg = args[i].ToLower();
+
+            //        switch (arg)
+            //        {
+            //            case "-i":
+            //                i++;
+            //                arg = args[i];
+            //                int index = arg.IndexOf(':');
+            //                if (index > 0)
+            //                {
+            //                    host = arg.Substring(0, index );
+            //                    port = Convert.ToInt32(arg.Substring(index + 1));
+            //                }
+            //                else
+            //                {
+            //                    host = arg;
+            //                }
+            //                continue;
+            //            case "-o":
+            //                i++;
+            //                fs = new FileStream(args[i], FileMode.Create, FileAccess.ReadWrite);
+            //                continue;
+            //            case "-d":
+            //                enableTracing = true;
+            //                continue;
+            //            default:
+            //                throw new InvalidDataException();
+            //                break;
+
+            //        }
+            //   // }
+            //}
+            //catch
+            //{
+            //    Console.WriteLine("Invalid Syntax.  Please try again.");
+            //    DispHelp();
+            //    return;
+            //}
+
             int _argLength = args.Length;
 
-            try
-            {
-                for (int i = 0; i < _argLength; i++)
+            if (_argLength == 2)
+            {                
+                try
                 {
-                    string arg = args[i].ToLower();
+                    string _cmd1 = args[0][1].ToString().ToLower();
 
-                    switch (arg)
+                    switch (_cmd1)
                     {
-                        case "-i":
-                            i++;
-                            arg = args[i];
-                            int index = arg.IndexOf(':');
-                            if (index > 0)
+                        case "i":
+                        case "d":
+
+                            if (_cmd1 == "d")
                             {
-                                host = arg.Substring(0, index );
-                                port = Convert.ToInt32(arg.Substring(index + 1));
+                                enableTracing = true;
+                                fs = new FileStream(NETTRACELOGNAME, FileMode.Create, FileAccess.ReadWrite);
                             }
-                            else
-                            {
-                                host = arg;
-                            }
-                            continue;
-                        case "-o":
-                            i++;
-                            fs = new FileStream(args[i], FileMode.Create, FileAccess.ReadWrite);
-                            continue;
-                        case "-d":
-                            enableTracing = true;
-                            continue;
+
+                            var _hostPort = args[1].ToString().Split(":");
+                                                                                    
+                            GetServerSecurityInfo(_hostPort[0], Convert.ToInt32(_hostPort[1]));
+                                                        
+                            break;
                         default:
                             throw new InvalidDataException();
                             break;
-
                     }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Invalid Syntax.  Please try again.");
+                    DispHelp();
+                }
+                
             }
-            catch
+            else
             {
-                Console.WriteLine("Invalid Syntax.  Please try again.");
                 DispHelp();
-                return;
             }
 
-            if (string.IsNullOrEmpty(host))
-            {
-                DispHelp();
-                return;
-            }
-
-            GetServerSecurityInfo(host, port);
-            Console.WriteLine("Press Enter:");
-            Console.ReadLine();
+            Console.ReadKey();
         }
 
         private static void GetServerSecurityInfo(string remoteHost, int portNum)
@@ -130,6 +160,13 @@ namespace TLSHelloCore
                 // Try/Catch is used to catch exception form call
                 Console.WriteLine($"Local Endpoint:  {client.Client.LocalEndPoint}");
                 Console.WriteLine($"Remote Endpoint:  {client.Client.RemoteEndPoint}");
+
+                if(enableTracing)
+                {
+                    Console.WriteLine($"\nTrace Logging enabled.");
+                    Console.WriteLine($"Trace log at: {Directory.GetCurrentDirectory()}\\{NETTRACELOGNAME}");
+                }
+
                 Console.WriteLine($"_____________________________________________________");
 
                 sslStream.AuthenticateAsClient(remoteHost, null,
