@@ -41,65 +41,73 @@ namespace TLSHelloCore
         const string OID_CRLDP_VALUE = "2.5.29.31";
         const string OID_SAN_VALUE = "2.5.29.17";
         static bool enableTracing = false;
+        static bool useColors = OperatingSystem.IsWindows();
         static PipeEventListener? listener;
+        static FileStream? fs;
 
         static PipeEventListener SetupTracing()
         {
-            return new PipeEventListener();
+            return new PipeEventListener(fs);
         }
 
         static void Main(string[] args)
         {
+            int port = 443;
+            string host = string.Empty;
             int _argLength = args.Length;
 
-            if (_argLength == 2)
+            try
             {
-                //for (int i = 0; i < _argLength; i++)
-                //{
-                    try
+                for (int i = 0; i < _argLength; i++)
+                {
+                    string arg = args[i].ToLower();
+
+                    switch (arg)
                     {
-                        string _cmd1 = args[0][1].ToString().ToLower();
+                        case "-i":
+                            i++;
+                            arg = args[i];
+                            int index = arg.IndexOf(':');
+                            if (index > 0)
+                            {
+                                host = arg.Substring(0, index );
+                                port = Convert.ToInt32(arg.Substring(index + 1));
+                            }
+                            else
+                            {
+                                host = arg;
+                            }
+                            continue;
+                        case "-o":
+                            i++;
+                            fs = new FileStream(args[i], FileMode.Create, FileAccess.ReadWrite);
+                            continue;
+                        case "-d":
+                            enableTracing = true;
+                            continue;
+                        default:
+                            throw new InvalidDataException();
+                            break;
 
-                        switch (_cmd1)
-                        {
-                            case "i":
-                            case "d":
-
-                                if (_cmd1 == "d")
-                                {
-                                    enableTracing = true;
-                                }
-
-                                var _hostPort = args[1].ToString().Split(":");
-
-                                // IPAddress addressList = Dns.GetHostEntry(_hostPort[0]).AddressList[0];
-
-                                // GetServerSecurityInfo(addressList.ToString(), Convert.ToInt32(_hostPort[1])).Wait();
-                                GetServerSecurityInfo(_hostPort[0], Convert.ToInt32(_hostPort[1]));
-
-                                //IPEndPoint pEndPoint = new IPEndPoint(addressList, Convert.ToInt32(args[1]));                                
-                                break;
-                            //case "d":
-                            //    enableTracing = true;
-                            //    continue;
-                            default:
-                                throw new InvalidDataException();
-                                break;
-                        }
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Invalid Syntax.  Please try again.");
-                        DispHelp();
-                    }
-                //}
+                }
             }
-            else
+            catch
+            {
+                Console.WriteLine("Invalid Syntax.  Please try again.");
+                DispHelp();
+                return;
+            }
+
+            if (string.IsNullOrEmpty(host))
             {
                 DispHelp();
+                return;
             }
 
-            Console.ReadKey();
+            GetServerSecurityInfo(host, port);
+            Console.WriteLine("Press Enter:");
+            Console.ReadLine();
         }
 
         private static void GetServerSecurityInfo(string remoteHost, int portNum)
@@ -107,7 +115,6 @@ namespace TLSHelloCore
             if (enableTracing)
             {
                 listener = SetupTracing();
-                Console.WriteLine("Listener created!!");
             }
 
             try
@@ -281,9 +288,9 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                 var sslStream = (SslStream)sender;
 
                 // Check sslStream.SslProtocol here 
-                Console.ForegroundColor = ConsoleColor.Cyan;                
+                if (useColors) Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine($"\r\nProtocol/Cipher Info:");
-                Console.ForegroundColor = ConsoleColor.Gray;
+                if (useColors) Console.ForegroundColor = ConsoleColor.Gray;
 
                 string _tlsVer = sslStream.SslProtocol.ToString().ToLower();
 
@@ -291,10 +298,10 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
 
                 if(_tlsVer != "tls12")
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    if (useColors) Console.ForegroundColor = ConsoleColor.Red;
 
                     Console.WriteLine("Waring: TLS versions should be 1.2 for APIM and no lower for security");
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    if (useColors) Console.ForegroundColor = ConsoleColor.Gray;
                 }
 
                 Console.WriteLine($"Negotiated Cipher: {sslStream.NegotiatedCipherSuite}");
@@ -306,16 +313,16 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                 Console.WriteLine("\r\n____________________________________________________");
             }
 
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            if (useColors) Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("\r\nValidating Certificate...");
-            Console.ForegroundColor = ConsoleColor.Gray;
+            if (useColors) Console.ForegroundColor = ConsoleColor.Gray;
 
             if (sslPolicyErrors == SslPolicyErrors.None)
             {
                 //  Console.WriteLine($"Cert Name:  {sslStream.RemoteCertificate.GetName()}");
                 Console.WriteLine($"\r\nCert Subject:  {_cert2.Subject}");
                 Console.WriteLine($"Cert Issuer:  {_cert2.Issuer}");
-                
+
                 Console.WriteLine($"Cert Start:  {_cert2.GetEffectiveDateString()}");
                 Console.WriteLine($"Cert Exp:  {_cert2.GetExpirationDateString()}");
                 Console.WriteLine($"Cert Serial #:  {_cert2.GetSerialNumberString()}");
@@ -328,9 +335,9 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                 //  Console.WriteLine($"Cert Alg. Value:  {sslStream.RemoteCertificate.}");
                 //Console.WriteLine($"Cert Public Key:  {certificate.GetPublicKeyString()}");
 
-                Console.ForegroundColor = ConsoleColor.Green;
+                if (useColors) Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("\r\nNo SSL Policy Errors.");
-                Console.ForegroundColor = ConsoleColor.Gray;
+                if (useColors) Console.ForegroundColor = ConsoleColor.Gray;
 
                 Console.WriteLine("\r\n____________________________________________________\r\n");
 
@@ -340,9 +347,9 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                 // OID Value 1.3.6.1.5.5.7.1.1 AIA
                 // OID CRL Dist 2.5.29.31 AIA
                 // OID SAN "2.5.29.17"
-                Console.ForegroundColor = ConsoleColor.Cyan;
+                if (useColors)   Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("Checking for AIA Extensions ....");
-                Console.ForegroundColor = ConsoleColor.Gray;
+                if (useColors) Console.ForegroundColor = ConsoleColor.Gray;
 
                 var _aiaExt = _cert2.Extensions.OfType<X509Extension>().FirstOrDefault(f => f.Oid.Value == OID_AIA_VALUE);
 
@@ -386,9 +393,9 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
 
                             if (!string.IsNullOrEmpty(_element))
                             {
-                                Console.ForegroundColor = ConsoleColor.Cyan;
+                                if (useColors) Console.ForegroundColor = ConsoleColor.Cyan;
                                 Console.WriteLine($"\r\nAIA {i}:");
-                                Console.ForegroundColor = ConsoleColor.Gray;
+                                if (useColors) Console.ForegroundColor = ConsoleColor.Gray;
                                 Console.WriteLine(_element);
 
                                 // Here we need to get the URL, test the URI validity
@@ -579,7 +586,6 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                 Console.WriteLine("\r\nCerticate Chain Info:");
                 for (int i = 0; i < chain.ChainElements.Count; i++)
                 {
-                    
                     Console.WriteLine($"Level {i+1}:  \r\n{chain.ChainElements[i].Certificate}");
                 }
 
@@ -612,14 +618,14 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
 
 
                     Console.WriteLine("\r\nErrors");
-                    Console.ForegroundColor = ConsoleColor.Red;
+//                    Console.ForegroundColor = ConsoleColor.Red;
                     for (int ii = 0; ii < _element.ChainElementStatus.Length; ii++)
                     {
 
                         Console.WriteLine($"{ii + 1}. - Status: {_element.ChainElementStatus[ii].Status} - {_element.ChainElementStatus[ii].StatusInformation}");
                     }
 
-                    Console.ForegroundColor = ConsoleColor.Gray;
+//                    Console.ForegroundColor = ConsoleColor.Gray;
 
                     Console.WriteLine("\r\n");
                 }
@@ -693,10 +699,14 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
 
         private static void DispHelp()
         {
-            Console.WriteLine("TLSHello makes a https connection and gives server info about that connection.");
+            Console.WriteLine("TLSHello makes a https connection and gives server info about that connection.\n");
+            Console.WriteLine("tlshello.exe [-d] [-o file.txt ] -i <host>\n");
 
-            Console.WriteLine("\nOptions: -i for information output to console. Syntax: tlshello.exe -i microsoft.com:443");
-            Console.WriteLine("\nOptions: -d to enable Debug Tracing. Syntax: tlshello.exe -d microsoft.com:443");
+            Console.WriteLine("Example:  tlshello.exe -i microsoft.com:443");
+
+            Console.WriteLine("\nOptions: -i <endpoint> Name and port of EndPoint to connect to. (mandatory)");
+            Console.WriteLine("\nOptions: -d To enable Debug Tracing. (optional)");
+            Console.WriteLine("\nOptions: -o <file> to write debug Tracing to a file instead of Console. (optional)");
 
             //Console.WriteLine("\r\n\n--- Test IP/FQDN & port with logging");
             //Console.WriteLine("\nSyntax: sox 192.168.0.1 80 -y or sox server.acme.com 80 -n \r\n\nFirst parameter:\tSpecify IP address or host name to connect to. \n\nSecond parameter:\tPort to connect to.  I.e. 80 for http.\n\nThird parameter:\tEnable event logging. -Y or -N\n\t\t\tIf enabled an warning message will be logged to the\n\t\t\tApplication Log.  Event ID 65535\n");
@@ -710,13 +720,17 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
 
     internal sealed class PipeEventListener : EventListener
     {
+        private FileStream? _fs;
         public const EventKeywords TasksFlowActivityIds = (EventKeywords)0x80;
         public const EventKeywords Debug = (EventKeywords)0x20000;
 
+        public PipeEventListener(FileStream? fs)
+        {
+            _fs = fs;
+        }
+
         protected override void OnEventSourceCreated(EventSource eventSource)
         {
-            Console.WriteLine("OnEventSourceCreated {0}", eventSource.Name);
-
             if (eventSource.Name.Contains("System.Net.Http") ||
                 eventSource.Name.Contains("System.Net.Sockets") ||
                 eventSource.Name.Contains("System.Net.Security") ||
@@ -748,15 +762,43 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                     sb.Append(counterData.Key).Append(": ").Append(counterData.Value);
                     appendSeparator = true;
                 }
-                Console.WriteLine(sb.ToString());
+
+                if (_fs != null)
+                {
+                    sb.Append(Environment.NewLine);
+                    _fs.Write(Encoding.UTF8.GetBytes(sb.ToString()));
+                }
+                else
+                {
+                    Console.WriteLine(sb.ToString());
+                }
             }
             else
             {
                 //var sb = new StringBuilder().Append($"{eventData.TimeStamp:HH:mm:ss.fffffff}  {eventData.ActivityId}.{eventData.RelatedActivityId}  {eventData.EventSource.Name}.{eventData.EventName}(");
-                var sb = new StringBuilder().Append($"{eventData.ActivityId}.{eventData.RelatedActivityId}  {eventData.EventSource.Name}.{eventData.EventName}(");
+                var name = eventData.EventSource.Name.StartsWith("Private.InternalDiagnostics.") ? eventData.EventSource.Name.Substring(28) : eventData.EventSource.Name;
+                var sb = new StringBuilder().Append($"{name}.{eventData.EventName}(");
                 for (int i = 0; i < eventData.Payload?.Count; i++)
                 {
-                    sb.Append(eventData.PayloadNames?[i]).Append(": ").Append(eventData.Payload[i]);
+                    if (eventData.Payload[i] is Byte[])
+                    {
+                        byte[] buffer = (byte[])eventData.Payload[i];
+
+                        sb.Append(eventData.PayloadNames?[i]).Append(": ");
+                        sb.Append(Environment.NewLine);
+                        for (int j = 0; j < buffer.Length; j++)
+                        {
+                            sb.Append($" {buffer[j]:X02}");
+                            if (((j + 1) % 16 ) == 0)
+                            {
+                                sb.Append(Environment.NewLine);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(eventData.PayloadNames?[i]).Append(": ").Append(eventData.Payload[i]);
+                    }
                     if (i < eventData.Payload?.Count - 1)
                     {
                         sb.Append(", ");
@@ -764,7 +806,15 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
                 }
 
                 sb.Append(")");
-                Console.WriteLine(sb.ToString());
+                if (_fs != null)
+                {
+                    sb.Append(Environment.NewLine);
+                    _fs.Write(Encoding.UTF8.GetBytes(sb.ToString()));
+                }
+                else
+                {
+                    Console.WriteLine(sb.ToString());
+                }
             }
         }
     }
