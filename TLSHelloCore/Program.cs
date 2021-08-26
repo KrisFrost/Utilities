@@ -618,14 +618,14 @@ That's what the SslLabs scanner, et al, do.  The server never shares its list, 
 
 
                     Console.WriteLine("\r\nErrors");
-//                    Console.ForegroundColor = ConsoleColor.Red;
+                    if (useColors) Console.ForegroundColor = ConsoleColor.Red;
                     for (int ii = 0; ii < _element.ChainElementStatus.Length; ii++)
                     {
 
                         Console.WriteLine($"{ii + 1}. - Status: {_element.ChainElementStatus[ii].Status} - {_element.ChainElementStatus[ii].StatusInformation}");
                     }
 
-//                    Console.ForegroundColor = ConsoleColor.Gray;
+                    if (useColors) Console.ForegroundColor = ConsoleColor.Gray;
 
                     Console.WriteLine("\r\n");
                 }
