@@ -14,7 +14,10 @@ bool _useSecure = true;
 
 #if DEBUG
 _isDebugMode = true;
-_ipUrl = "microsoft.com";
+//_ipUrl = "https://microsoft.com";
+_ipUrl = "https://104.215.148.63";
+_runContinuous = true;
+
 //_port = "443";
 #else
         _ipUrl = args[0].ToString().ToLower();
@@ -65,19 +68,59 @@ async static Task TestHttpConnection(string ipUrl, bool runContinuous)
 
         Uri.TryCreate(ipUrl, UriKind.RelativeOrAbsolute, out _uriResult);
 
-        if(_uriResult == null || (_uriResult.Scheme != Uri.UriSchemeHttp || _uriResult.Scheme != Uri.UriSchemeHttps))
+        if(_uriResult == null || (_uriResult.Scheme != Uri.UriSchemeHttp && _uriResult.Scheme != Uri.UriSchemeHttps))
         {
             Console.WriteLine($@"{ipUrl} is not a value Uri.");
             DisplayHelp();
+
+            return;
         }
       
 
         do
         {
-            HttpClient _client = new HttpClient();
-            var _request = new HttpRequestMessage(HttpMethod.Get, ipUrl);
+            try
+            {
+                // what if there are multiple IP's for the hostname, does that matter to us?
+                // handle all scenarios.
+                HttpClient _client = new HttpClient();
+                var _request = new HttpRequestMessage(HttpMethod.Get, ipUrl);
 
-            await _client.SendAsync(_request);
+                var _response = await _client.SendAsync(_request);
+
+                if (_response.IsSuccessStatusCode)
+                {
+
+                }
+                else
+                {
+
+                }
+            }
+            catch(HttpRequestException reqex)
+            {
+                var _message = reqex.GetBaseException().Message;
+
+                switch(_message)
+                {
+                    case string a when a.Contains("RemoteCertificateNameMismatch"):
+                        Console.WriteLine($"There is certificate issue with the URL: {ipUrl}. \n Please fix the cert issue or use correct URL.  Message: {_message}");
+                        
+                        return;
+
+
+                    default:
+
+                        break;
+                }
+
+                //The remote certificate is invalid according to the validation procedure: RemoteCertificateNameMismatch
+                Console.WriteLine($@"The following error occurred: {reqex.GetBaseException().Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"The following error occurred: {ex.GetBaseException().Message}");
+            }
 
             // here we could get back a 404, 401 or something which is ok
             // means there was a connection.
