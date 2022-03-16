@@ -1,5 +1,9 @@
-﻿    // See https://aka.ms/new-console-template for more information
-    int _argLength = args.Length;
+﻿
+
+// See https://aka.ms/new-console-template for more information
+using System.Diagnostics;
+
+int _argLength = args.Length;
 
 // Debug Args
 // Issue here port could be something other than 80 or 443 so we need 
@@ -14,8 +18,8 @@ bool _useSecure = true;
 
 #if DEBUG
 _isDebugMode = true;
-//_ipUrl = "https://microsoft.com";
-_ipUrl = "https://104.215.148.63";
+_ipUrl = "https://microsoft.com";
+//_ipUrl = "https://104.215.148.63";
 _runContinuous = true;
 
 //_port = "443";
@@ -58,43 +62,94 @@ else
 
 Console.ReadKey();
 
+
+
+static void DisplayMessage(string message, ConsoleColor color = ConsoleColor.White)
+{
+/*
+    switch(mt)
+    {
+        case MessageType.Default:
+            Console.ForegroundColor = ConsoleColor.White;
+            break;
+
+            case MessageType.Warning:
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+            break;
+            case MessageType.Error:
+            Console.ForegroundColor = ConsoleColor.Red;
+
+            break;
+
+        case MessageType.Success:
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            break;
+    }
+*/
+    Console.ForegroundColor = color;
+    Console.WriteLine(message);
+
+    Console.ForegroundColor = ConsoleColor.White;
+}
+
 async static Task TestHttpConnection(string ipUrl, bool runContinuous)
 {
     try
-    {   
+    {
         // validate a valid url, else return error and show help
-      
-        Uri _uriResult = new Uri(ipUrl);
+
+        Uri _uriResult;// = new Uri(ipUrl);
 
         Uri.TryCreate(ipUrl, UriKind.RelativeOrAbsolute, out _uriResult);
 
         if(_uriResult == null || (_uriResult.Scheme != Uri.UriSchemeHttp && _uriResult.Scheme != Uri.UriSchemeHttps))
         {
-            Console.WriteLine($@"{ipUrl} is not a value Uri.");
+            DisplayMessage($@"{ipUrl} is not a value Uri.", ConsoleColor.Red);
             DisplayHelp();
 
             return;
         }
       
+        Stopwatch _sw = new Stopwatch();
+
+        Console.WriteLine($@"HttpsPing has started for URL {ipUrl} - Time (Utc): {DateTime.UtcNow}");
 
         do
         {
             try
-            {
+            { 
+                _sw.Start();
                 // what if there are multiple IP's for the hostname, does that matter to us?
                 // handle all scenarios.
                 HttpClient _client = new HttpClient();
+                _client.Timeout = TimeSpan.FromSeconds(5);
                 var _request = new HttpRequestMessage(HttpMethod.Get, ipUrl);
 
                 var _response = await _client.SendAsync(_request);
 
+                _sw.Stop();
+
                 if (_response.IsSuccessStatusCode)
                 {
-
+                    DisplayMessage($@"Http Connection to {ipUrl} successful. Time: {(_sw.ElapsedMilliseconds * 0.001).ToString("0.###")} secs", ConsoleColor.Green);
                 }
                 else
                 {
-
+                    DisplayMessage($@"Connection to {ipUrl} failed. Time: {(_sw.ElapsedMilliseconds * 0.001).ToString("0.###")} secs", ConsoleColor.Red);
+                }
+            }
+            catch(TaskCanceledException cex)
+            {
+                //The request was canceled due to the configured HttpClient.Timeout of 5 seconds elapsing.
+                if (cex.Message.Contains("Timeout"))
+                {
+                    DisplayMessage($@"Connection to {ipUrl} timed out.  Default is set to 5 seconds.", ConsoleColor.Red);
+                }
+                else
+                {
+                    throw cex;
                 }
             }
             catch(HttpRequestException reqex)
@@ -104,7 +159,7 @@ async static Task TestHttpConnection(string ipUrl, bool runContinuous)
                 switch(_message)
                 {
                     case string a when a.Contains("RemoteCertificateNameMismatch"):
-                        Console.WriteLine($"There is certificate issue with the URL: {ipUrl}. \n Please fix the cert issue or use correct URL.  Message: {_message}");
+                        DisplayMessage($"There is certificate issue with the URL: {ipUrl} \nPlease fix the cert issue or use correct URL.  Message: {_message}", ConsoleColor.Red);
                         
                         return;
 
@@ -119,7 +174,11 @@ async static Task TestHttpConnection(string ipUrl, bool runContinuous)
             }
             catch (Exception ex)
             {
-                Console.WriteLine($@"The following error occurred: {ex.GetBaseException().Message}");
+                DisplayMessage($@"The following error occurred: {ex.GetBaseException().Message}", ConsoleColor.Red);
+            }
+            finally
+            {
+                _sw.Reset();
             }
 
             // here we could get back a 404, 401 or something which is ok
@@ -130,7 +189,7 @@ async static Task TestHttpConnection(string ipUrl, bool runContinuous)
     }
     catch (Exception ex)
     {
-        Console.WriteLine($@"The following error occurred: {ex.GetBaseException().Message}");
+        DisplayMessage($@"The following error occurred: {ex.GetBaseException().Message}", ConsoleColor.Red);
         Console.WriteLine();
         DisplayHelp();
     }
@@ -162,3 +221,14 @@ async static Task TestHttpConnection(string ipUrl, bool runContinuous)
 
     //         Console.WriteLine("\r\n\nUse App.config to enable notifications");
 }
+
+/*
+enum MessageType
+{
+    Default,
+    Info,
+    Success,
+    Warning,
+    Error
+}
+*/
