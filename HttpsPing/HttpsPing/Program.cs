@@ -1,6 +1,4 @@
-﻿
-
-// See https://aka.ms/new-console-template for more information
+﻿// See https://aka.ms/new-console-template for more information
 using System.Diagnostics;
 
 int _argLength = args.Length;
@@ -18,7 +16,10 @@ bool _useSecure = true;
 
 #if DEBUG
 _isDebugMode = true;
-_ipUrl = "https://microsoft.com";
+//_ipUrl = "https://microsoft.com";
+//_ipUrl = "https://apiutils.azure-api.net";
+
+_ipUrl = "https://apiutils.management.azure-api.net/servicestatus";
 //_ipUrl = "https://104.215.148.63";
 _runContinuous = true;
 
@@ -96,6 +97,8 @@ static void DisplayMessage(string message, ConsoleColor color = ConsoleColor.Whi
 
 async static Task TestHttpConnection(string ipUrl, bool runContinuous)
 {
+    const int CONNECTIONTIMEOUT = 6;
+
     try
     {
         // validate a valid url, else return error and show help
@@ -124,7 +127,7 @@ async static Task TestHttpConnection(string ipUrl, bool runContinuous)
                 // what if there are multiple IP's for the hostname, does that matter to us?
                 // handle all scenarios.
                 HttpClient _client = new HttpClient();
-                _client.Timeout = TimeSpan.FromSeconds(5);
+                _client.Timeout = TimeSpan.FromSeconds(CONNECTIONTIMEOUT);
                 var _request = new HttpRequestMessage(HttpMethod.Get, ipUrl);
 
                 var _response = await _client.SendAsync(_request);
@@ -133,11 +136,11 @@ async static Task TestHttpConnection(string ipUrl, bool runContinuous)
 
                 if (_response.IsSuccessStatusCode)
                 {
-                    DisplayMessage($@"Http Connection to {ipUrl} successful. Time: {(_sw.ElapsedMilliseconds * 0.001).ToString("0.###")} secs", ConsoleColor.Green);
+                    DisplayMessage($@"Connection to {ipUrl} successful. Time: {(_sw.ElapsedMilliseconds * 0.001).ToString("0.###")} secs", ConsoleColor.Green);
                 }
                 else
                 {
-                    DisplayMessage($@"Connection to {ipUrl} failed. Time: {(_sw.ElapsedMilliseconds * 0.001).ToString("0.###")} secs", ConsoleColor.Red);
+                    DisplayMessage($@"Connection was made to {ipUrl} status code  {_response.StatusCode} returned. Time: {(_sw.ElapsedMilliseconds * 0.001).ToString("0.###")} secs", ConsoleColor.Yellow);
                 }
             }
             catch(TaskCanceledException cex)
@@ -145,7 +148,7 @@ async static Task TestHttpConnection(string ipUrl, bool runContinuous)
                 //The request was canceled due to the configured HttpClient.Timeout of 5 seconds elapsing.
                 if (cex.Message.Contains("Timeout"))
                 {
-                    DisplayMessage($@"Connection to {ipUrl} timed out.  Default is set to 5 seconds.", ConsoleColor.Red);
+                    DisplayMessage($@"Connection to {ipUrl} timed out.  Default is set to {CONNECTIONTIMEOUT.ToString()} seconds.", ConsoleColor.Red);
                 }
                 else
                 {
@@ -221,6 +224,7 @@ async static Task TestHttpConnection(string ipUrl, bool runContinuous)
 
     //         Console.WriteLine("\r\n\nUse App.config to enable notifications");
 }
+
 
 /*
 enum MessageType
