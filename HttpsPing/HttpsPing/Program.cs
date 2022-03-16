@@ -17,9 +17,9 @@ bool _useSecure = true;
 #if DEBUG
 _isDebugMode = true;
 //_ipUrl = "https://microsoft.com";
-//_ipUrl = "https://apiutils.azure-api.net";
-
-_ipUrl = "https://apiutils.management.azure-api.net/servicestatus";
+_ipUrl = "https://apiutils.azure-api.net/status-0123456789abcdef";
+//_ipUrl = "https://apiutils.developer.azure-api.net/internal-status-0123456789abcdef";
+//_ipUrl = "https://apiutils.management.azure-api.net/servicestatus";
 //_ipUrl = "https://104.215.148.63";
 _runContinuous = true;
 
