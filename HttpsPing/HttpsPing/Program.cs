@@ -17,7 +17,10 @@ bool _useSecure = true;
 #if DEBUG
 _isDebugMode = true;
 //_ipUrl = "https://microsoft.com";
-_ipUrl = "https://apiutils.azure-api.net/status-0123456789abcdef";
+//_ipUrl = "https://fkapimanagementprod.management.azure-api.net/servicestatus";
+_ipUrl = "https://zebpay-stg.management.azure-api.net:3443/servicestatus?api-version=2018-01-01";
+//_ipUrl = "https://api-eco-prod.azure-api.net/ciam/ja_jp/loyalty-progress";
+//_ipUrl = "https://apiutils.azure-api.net/status-0123456789abcdef";
 //_ipUrl = "https://apiutils.developer.azure-api.net/internal-status-0123456789abcdef";
 //_ipUrl = "https://apiutils.management.azure-api.net/servicestatus";
 //_ipUrl = "https://104.215.148.63";
@@ -25,21 +28,14 @@ _runContinuous = true;
 
 //_port = "443";
 #else
-        _ipUrl = args[0].ToString().ToLower();
 
-        if(_argLength > 3)
-        
-        // No use for checking for hs, we're going to do one or the other
-        if(_args[2].ToLower() == "h")
-        {
-            _useSecure = false;
-        }
-        else if (_args[2].ToLower() != hs
+_ipUrl = args[0].ToString().ToLower();
 
 
 #endif
 
-if (_argLength == 3)
+//Console.WriteLine(args.Length);
+if (_argLength == 2)
 { 
     if(args[2].ToLower() == "c")
     {
@@ -52,7 +48,7 @@ if (_argLength == 3)
         return;
     }
 }
-else if (_argLength == 2 || _isDebugMode)
+else if (_argLength == 1 || _isDebugMode)
 {
     await TestHttpConnection(_ipUrl, _runContinuous);
 }
@@ -140,7 +136,14 @@ async static Task TestHttpConnection(string ipUrl, bool runContinuous)
                 }
                 else
                 {
-                    DisplayMessage($@"Connection was made to {ipUrl} status code  {_response.StatusCode} returned. Time: {(_sw.ElapsedMilliseconds * 0.001).ToString("0.###")} secs", ConsoleColor.Yellow);
+                    if(_response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+                    {
+                        DisplayMessage($@"Service is not available. If proxy service or Gateway, check it's request logs and http.sys logs(if Windows Service) {ipUrl} status code  {_response.StatusCode} returned. Time: {(_sw.ElapsedMilliseconds * 0.001).ToString("0.###")} secs", ConsoleColor.Red);
+                    }
+                    else
+                    { 
+                        DisplayMessage($@"Connection was made to {ipUrl} status code  {_response.StatusCode} returned. Time: {(_sw.ElapsedMilliseconds * 0.001).ToString("0.###")} secs", ConsoleColor.Yellow);
+                    }
                 }
             }
             catch(TaskCanceledException cex)
@@ -201,8 +204,9 @@ async static Task TestHttpConnection(string ipUrl, bool runContinuous)
     static void DisplayHelp()
     {
     // HttpsPing url/ip port <80 or 443>
+    // Add the ability to specify get, post put etc.
 
-    Console.WriteLine("HttpsPing Help\n");
+    Console.WriteLine("HttpsPing Help (By Kris Frost)\n");
     Console.WriteLine("Usage:");
     Console.WriteLine("HttpsPing will make a http(s) connetion to let you know if traffic can reach the destination and the destination is servicing the requests. This provides a better test than TCP connection when testing Http services.\n");
 
