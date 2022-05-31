@@ -1,0 +1,406 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{175AAAE3-0CBD-4B5F-B53D-DCBE7C957D3A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>SHGLogViewer</RootNamespace>
+    <AssemblyName>SHGLogViewer</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CommonServiceLocator, Version=2.0.6.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>packages\CommonServiceLocator.2.0.6\lib\net48\CommonServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
+      <HintPath>packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras, Version=5.4.1.0, Culture=neutral, PublicKeyToken=669f0b5e8f868abf, processorArchitecture=MSIL">
+      <HintPath>packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
+      <HintPath>packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="ReachFramework" />
+    <Reference Include="SharpDX, Version=2.5.0.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL">
+      <HintPath>packages\SharpDX.2.5.0\lib\net40\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.D3DCompiler, Version=2.5.0.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL">
+      <HintPath>packages\SharpDX.D3DCompiler.2.5.0\lib\net40\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1, Version=2.5.0.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL">
+      <HintPath>packages\SharpDX.Direct2D1.2.5.0\lib\net40\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D10, Version=2.5.0.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL">
+      <HintPath>packages\SharpDX.Direct3D10.2.5.0\lib\net40\SharpDX.Direct3D10.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D9, Version=2.5.0.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL">
+      <HintPath>packages\SharpDX.Direct3D9.2.5.0\lib\net40\SharpDX.Direct3D9.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=2.5.0.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL">
+      <HintPath>packages\SharpDX.DXGI.2.5.0\lib\net40\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Shared.WPF, Version=18.3460.0.35, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Printing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Telerik.Documents.SpreadsheetStreaming, Version=2022.1.217.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Documents.SpreadsheetStreaming.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Pivot.Core, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Pivot.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Pivot.DataProviders.Adomd, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Pivot.DataProviders.Adomd.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Pivot.DataProviders.Queryable, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Pivot.DataProviders.Queryable.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Pivot.DataProviders.Xmla, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Pivot.DataProviders.Xmla.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Cloud, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Cloud.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Cloud.Controls, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Cloud.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Chart, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Chart.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Chart.Direct2D, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Chart.Direct2D.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Charting, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Charting.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.ConversationalUI, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.ConversationalUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Data, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.DataServices, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.DataServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.DataVisualization, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.DataVisualization.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Diagrams, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Diagrams.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Diagrams.Extensions, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Diagrams.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Diagrams.Ribbon, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Diagrams.Ribbon.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Docking, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.EntityFrameworkCore">
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Expressions, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Expressions.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.FileDialogs, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.FileDialogs.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.FixedDocumentViewers, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.FixedDocumentViewers.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.FixedDocumentViewersUI, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.FixedDocumentViewersUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.GanttView, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.GanttView.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.GridView, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.GridView.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.GridView.Export, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.GridView.Export.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.GridView.SpreadsheetStreamingExport.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.ImageEditor, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.ImageEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Input, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Media, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Media.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Navigation, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Navigation.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Pivot, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Pivot.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.PivotFieldList, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.PivotFieldList.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.RibbonView, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.RibbonView.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.RichTextBox">
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.RichTextBox.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.ScheduleView, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.ScheduleView.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Spreadsheet, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.Spreadsheet.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.SpreadsheetUI, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.SpreadsheetUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.SyntaxEditor, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.SyntaxEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.VirtualGrid, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Controls.VirtualGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Data, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Diagrams.Core, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Diagrams.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.CMapUtils, Version=2022.1.217.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Documents.CMapUtils.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Core, Version=2022.1.217.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Documents.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Fixed, Version=2022.1.217.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Documents.Fixed.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Flow, Version=2022.1.217.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Documents.Flow.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Flow.FormatProviders.Doc, Version=2022.1.217.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Documents.Flow.FormatProviders.Doc.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Flow.FormatProviders.Pdf, Version=2022.1.217.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Documents.Flow.FormatProviders.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Proofing, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Documents.Proofing.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Proofing.DataGrid, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Documents.Proofing.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Proofing.RadGridView, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Documents.Proofing.RadGridView.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Spreadsheet, Version=2022.1.217.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Documents.Spreadsheet.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml, Version=2022.1.217.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Spreadsheet.FormatProviders.Pdf, Version=2022.1.217.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Documents.Spreadsheet.FormatProviders.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Spreadsheet.FormatProviders.Xls, Version=2022.1.217.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Documents.Spreadsheet.FormatProviders.Xls.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.MediaFoundation, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.MediaFoundation.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.PersistenceFramework, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.PersistenceFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Scheduling.Core, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Scheduling.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.SyntaxEditor.Core, Version=2022.1.222.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.SyntaxEditor.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Zip, Version=2022.1.217.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Zip.Extensions, Version=2022.1.217.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DevOps\krisfrost\Utilities\SharedAssemblies\Telerik\WPF\Latest\Telerik.Windows.Zip.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="LogItemModel.cs" />
+    <Compile Include="LogViewer.xaml.cs">
+      <DependentUpon>LogViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Page Include="LogViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="ResourceDictionaries\BaseTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="WPF.Common\WPF.Common.csproj">
+      <Project>{4a9bed53-c176-48ee-b25a-7d12a1715377}</Project>
+      <Name>WPF.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
