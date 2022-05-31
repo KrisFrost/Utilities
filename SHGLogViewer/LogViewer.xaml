@@ -4,9 +4,47 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:SHGLogViewer"
+             xmlns:local="clr-namespace:SHGLogViewer"             
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <local:GridRowStyleSelector x:Key="GridRowStyleSelector" >
+            <local:GridRowStyleSelector.ErrorStyle>
+                <Style TargetType="telerik:GridViewRow">
+                    <Setter Property="Background" Value="Red" />
+                </Style>
+            </local:GridRowStyleSelector.ErrorStyle>
+
+            <local:GridRowStyleSelector.WarningStyle>
+                <Style TargetType="telerik:GridViewRow">
+                    <Setter Property="Background" Value="Yellow" />
+                </Style>
+            </local:GridRowStyleSelector.WarningStyle>
+
+            <local:GridRowStyleSelector.CriticalStyle>
+                <Style TargetType="telerik:GridViewRow">
+                    <Setter Property="Background" Value="Magenta" />
+                </Style>
+            </local:GridRowStyleSelector.CriticalStyle>
+
+            <local:GridRowStyleSelector.VerboseStyle>
+                <Style TargetType="telerik:GridViewRow">
+                    <Setter Property="Background" Value="Green" />
+                </Style>
+            </local:GridRowStyleSelector.VerboseStyle>
+
+            <local:GridRowStyleSelector.InfoStyle>
+                <Style TargetType="telerik:GridViewRow">
+                    <Setter Property="Background" Value="White" />
+                </Style>
+            </local:GridRowStyleSelector.InfoStyle>
+
+        </local:GridRowStyleSelector>
+
+        
+        
+
+    </UserControl.Resources>
     <Grid>
         <Grid x:Name="LogViewerMainGrid">
             <Grid.ColumnDefinitions>
@@ -34,7 +72,27 @@
 
             <Button x:Name="btnRun" Content="Run" Grid.Row="3" Grid.Column="3" MinWidth="80" HorizontalAlignment="Center" Click="btnRun_Click"  />
 
-            <telerik:RadGridView x:Name="rgLogs" Grid.Row="5" Grid.RowSpan="4" Grid.Column="1" Grid.ColumnSpan="6" />
+            <telerik:RadGridView x:Name="rgLogs" Grid.Row="5" Grid.RowSpan="4" Grid.Column="1" Grid.ColumnSpan="6" 
+                AutoGenerateColumns="False"
+                CanUserFreezeColumns="False"
+                IsReadOnly="True"
+                ItemsSource="{Binding}" 
+                SelectionMode="Single"    
+                RowStyleSelector="{StaticResource GridRowStyleSelector}"
+                                 >
+                <telerik:RadGridView.Columns>
+                    <telerik:GridViewDataColumn Header="Level" DataMemberBinding="{Binding Level}" />
+                    <telerik:GridViewDataColumn Header="TimeStamp" DataMemberBinding="{Binding TimeStamp}" />
+                    <telerik:GridViewDataColumn Header="Category" DataMemberBinding="{Binding Category}" />
+                    <telerik:GridViewDataColumn Header="Source" DataMemberBinding="{Binding Source}" />
+                    <telerik:GridViewDataColumn Header="StatusCode" DataMemberBinding="{Binding StatusCode}" />
+                    <telerik:GridViewDataColumn Header="Message" DataMemberBinding="{Binding Message}" />
+                    <telerik:GridViewDataColumn Header="Exception" DataMemberBinding="{Binding Exception}" />
+                    <telerik:GridViewDataColumn Header="Content" DataMemberBinding="{Binding ContentType}" />
+                    
+                    
+                </telerik:RadGridView.Columns>
+            </telerik:RadGridView>
 
         </Grid>
                 

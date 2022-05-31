@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -40,9 +41,14 @@ namespace SHGLogViewer
 
         RootAppStateModel RootAppState { get; set; }
 
+        public ObservableCollection<LogItemModel> LogItems { get; set; }
+
         public LogViewer()
         {
             InitializeComponent();
+            LogItems = new ObservableCollection<LogItemModel>();
+
+            rgLogs.ItemsSource = LogItems;
 
             RootAppState = AppStateFactory.GetGlobalRootAppState();
 
@@ -103,7 +109,7 @@ namespace SHGLogViewer
                         }
                     }
 
-                    ConvertToLogItem(_sb.ToString());
+                    LogItems.Add(ConvertToLogItem(_sb.ToString()));
                 }
             }
 
