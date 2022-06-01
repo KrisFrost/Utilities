@@ -229,7 +229,13 @@ namespace SHGLogViewer
 
                 // The above should assign everything, in the event it doesn't assign everything else to message.
                 // We'll have to use this to clean up and do more parsing when needed.
-                _ret.Message = _tempLine;             
+
+                if (_ret.Level == "Info" || _ret.Level == "Debug")
+                {
+                    _ret.Message = _tempLine;
+                }
+                else
+                    _ret.ContentType = _tempLine;
 
 
 
