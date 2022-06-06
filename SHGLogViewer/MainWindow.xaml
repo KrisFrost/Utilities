@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SHGLogViewer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="SelfHosted Gateway Log Viewer" Height="1024" Width="1024">
     <Grid>
         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
             <Grid x:Name="RootGrid">
