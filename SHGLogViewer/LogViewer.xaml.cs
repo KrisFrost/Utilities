@@ -49,15 +49,19 @@ namespace SHGLogViewer
         public LogViewer()
         {
             InitializeComponent();
+            RootAppState = AppStateFactory.GetGlobalRootAppState();
+
+            RootAppState.IsBusy = true;
+
             LogItems = new ObservableCollection<LogItemModel>();
 
             rgLogs.ItemsSource = LogItems;
 
-            RootAppState = AppStateFactory.GetGlobalRootAppState();
+          
 
             ShowFileDialog();
 
-            RootAppState.IsBusy = true;
+            
           //  LoadLogFile(_logFileName);
 
             RootAppState.IsBusy = false;
@@ -321,6 +325,13 @@ namespace SHGLogViewer
 
         private void btnRun_Click(object sender, RoutedEventArgs e)
         {
+            Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+            {
+                RootAppState.IsBusy = true;
+
+             }));
+                        
+
             if (!string.IsNullOrEmpty(_logFileName))
             {
                 LoadLogFile();
@@ -330,6 +341,12 @@ namespace SHGLogViewer
                 MessageBox.Show("Please select a valid file", "Warning", MessageBoxButton.OK);
                 ShowFileDialog();
             }
+
+            Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+            {
+                RootAppState.IsBusy = false;
+
+            }));
 
         }
 
