@@ -2,6 +2,7 @@
 using System.Diagnostics;
 
 int _argLength = args.Length;
+Console.WriteLine(_argLength);
 
 // Debug Args
 // Issue here port could be something other than 80 or 443 so we need 
@@ -15,17 +16,10 @@ bool _useSecure = true;
 
 
 #if DEBUG
-_isDebugMode = true;
+//_isDebugMode = true;
 //_ipUrl = "https://microsoft.com";
-//_ipUrl = "https://fkapimanagementprod.management.azure-api.net/servicestatus";
-//_ipUrl = "https://zebpay-stg.management.azure-api.net:3443/servicestatus?api-version=2018-01-01";
-_ipUrl = "https://dev-int.brf.nextgatecloud.com/ws/mm/PersonWS";
-//_ipUrl = "https://api-eco-prod.azure-api.net/ciam/ja_jp/loyalty-progress";
-//_ipUrl = "https://apiutils.azure-api.net/status-0123456789abcdef";
-//_ipUrl = "https://apiutils.developer.azure-api.net/internal-status-0123456789abcdef";
-//_ipUrl = "https://apiutils.management.azure-api.net/servicestatus";
-//_ipUrl = "https://104.215.148.63";
-_runContinuous = true;
+
+//_runContinuous = true;
 
 //_port = "443";
 #else
@@ -38,7 +32,7 @@ _ipUrl = args[0].ToString().ToLower();
 //Console.WriteLine(args.Length);
 if (_argLength == 2)
 { 
-    if(args[2].ToLower() == "c")
+    if(args[1].ToLower() == "c")
     {
         _runContinuous = true;
         await TestHttpConnection(_ipUrl, _runContinuous);
@@ -49,7 +43,7 @@ if (_argLength == 2)
         return;
     }
 }
-else if (_argLength == 1 || _isDebugMode)
+else if (_argLength == 1)// || _isDebugMode)
 {
     await TestHttpConnection(_ipUrl, _runContinuous);
 }
@@ -217,7 +211,7 @@ async static Task TestHttpConnection(string ipUrl, bool runContinuous)
         Console.WriteLine("Example:  httpsping.exe https://microsoft.com c\n");
     Console.WriteLine("Options:");
     Console.WriteLine("Option: <url or IP> IP Or url to test http(s) connectivity.  Use http or https with url or IP.  If you are using a different port, use :<port#>.");
-        Console.WriteLine("Option: Different port exampel https://acme.com:4443");        
+        Console.WriteLine("Option: Different port example https://acme.com:4443");        
         Console.WriteLine("Option: c this is option and if c is present, will continually repeat the connection. Press a key to stop.");
 
 

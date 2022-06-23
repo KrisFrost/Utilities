@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HttpsPing": {
+      "commandName": "Project",
+      "commandLineArgs": "https://mobile-va-wt.lotteryservices.com c"
+    }
+  }
+}
