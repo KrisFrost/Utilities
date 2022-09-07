@@ -13,7 +13,7 @@ namespace ApimSamples
         // API as it will allow complete access.  This key is for testing only to a specific
         // generic API.  Please use the API you're testing and Tracing must be enabled for it to work.
         //https://krisfrost.net/2022/09/07/azure-apim-inspector-trace-c-postman/
-        internal const string APIMSUBSCRIPTIONKEY = "6089327acfe542fda59898bc0972dc92";
+        internal const string APIMSUBSCRIPTIONKEY = "";
 
         // Use a URL to an APIM API operation.
         const string _webApiUrl = "https://apiutils.azure-api.net/Conference/topics?dayno=1";
@@ -50,10 +50,12 @@ namespace ApimSamples
 
             Console.WriteLine($@"Response Code: {_response.StatusCode}");
 
+            // Check for trace url
             var _traceHeader = _response.Headers.SingleOrDefault(w => w.Key.ToLower().Contains("ocp-apim-trace-location"));
 
             if(_traceHeader.Key != null)
             {
+                // Open the inspector trace in a browser with a extension to format json
                 OpenUrl(_traceHeader.Value.First());
             }
 
