@@ -2,7 +2,7 @@
   "profiles": {
     "TLSHello": {
       "commandName": "Project",
-      "commandLineArgs": "-d microsoft.com:443"
+      "commandLineArgs": "-d integrate.kier.co.uk:443"
     }
   }
 }

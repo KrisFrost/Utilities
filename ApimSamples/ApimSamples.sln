@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApimSamples", "ApimSamples.csproj", "{55640F13-5F93-4890-BE1B-F056E21AF29C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibHelpers", "..\LibHelpers\LibHelpers.csproj", "{DA7E3A95-54DC-453E-8723-1AD6806C2605}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55640F13-5F93-4890-BE1B-F056E21AF29C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55640F13-5F93-4890-BE1B-F056E21AF29C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55640F13-5F93-4890-BE1B-F056E21AF29C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55640F13-5F93-4890-BE1B-F056E21AF29C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA7E3A95-54DC-453E-8723-1AD6806C2605}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA7E3A95-54DC-453E-8723-1AD6806C2605}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA7E3A95-54DC-453E-8723-1AD6806C2605}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA7E3A95-54DC-453E-8723-1AD6806C2605}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E84DEA35-86B9-4794-A414-5D364C36B697}
+	EndGlobalSection
+EndGlobal
